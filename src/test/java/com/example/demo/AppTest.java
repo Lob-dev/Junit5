@@ -47,7 +47,7 @@ public class AppTest {
     // 각각의 테스트가 실행된 이후에 호출된다.
     @AfterEach
     public void afterEach() {
-        System.out.println("AppTest.afterEach");
+        System.out.println  ("AppTest.afterEach");
     }
 
 }
