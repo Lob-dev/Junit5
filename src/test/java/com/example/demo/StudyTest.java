@@ -1,12 +1,17 @@
 package com.example.demo;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.*;
 
 import java.time.Duration;
 import java.util.function.Supplier;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class StudyTest {
 
@@ -30,10 +35,15 @@ class StudyTest {
 
     @Test
     @DisplayName("스터디 만들기")
+    //@EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "local")
+    //@EnabledOnJre({JRE.JAVA_8, JRE.JAVA_9})
+    //@EnabledOnOs({OS.WINDOWS, OS.LINUX})
     void create_new_study() {
 
         // Arrange
         Study study = new Study(10);
+        String test_env = System.getenv("TEST_ENV");
+        System.out.println(test_env);
 
         // Assert
         assertAll(
@@ -42,13 +52,15 @@ class StudyTest {
                         () -> "스터디를 만들었을 때는 "+StudyStatus.DRAFT+" 상태여야 한다."),
                     // 단순히 문자열을 넘기는 방식으로 작성할 경우 해당 코드는 성공 실패 여부와 상관없이 문자열 연산을 하지만
                     // 람다식으로 만들었을 경우에는 해당 함수가 필요할 때만 호출되어 생성됨으로 연산 자원을 아낄 수 있다.
-                () -> assertTrue(study.getLimit() > 0, "스터디 참석 가능 인원은 0보다 커야합니다.")
+                () -> assertTrue(study.getLimit() > 0, "스터디 참석 가능 인원은 0보다 커야합니다."),
+                () -> assertThat(study.getLimit()).isGreaterThan(0),
+                () -> assumeFalse("LOCAL".equalsIgnoreCase(test_env))
         );
         System.out.println("StudyTest.create_new_study");
-
     }
 
     @Test
+    @Tag("fast") // tag 에 따른 테스트 제공
     @DisplayName("스터디 생성 시 ThrowException ")
     void create_new_study_ThrowException() {
         // assertThrows(IllegalArgumentException.class, () -> new Study(-10));
@@ -62,7 +74,8 @@ class StudyTest {
     }
 
     @Test
-    @DisplayName("스터디 생성 시 ThrowException ")
+    @DisplayName("스터디 생성 시 Time Out ")
+    @Tag("slow")
     void create_new_study_And_Timeout() {
         assertTimeout(Duration.ofSeconds(1), () -> new Study(10));
 
