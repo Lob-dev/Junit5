@@ -1,17 +1,17 @@
-package com.example.demo;
+package com.example.demo.junit;
 
+import com.example.demo.Study;
+import com.example.demo.StudyStatus;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.*;
 
 import java.time.Duration;
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class StudyTest {
 
@@ -48,7 +48,7 @@ class StudyTest {
         // Assert
         assertAll(
                 () -> assertNotNull(study),
-                () -> assertEquals(StudyStatus.DRAFT, study.getStatus(),
+                () -> Assertions.assertEquals(StudyStatus.DRAFT, study.getStatus(),
                         () -> "스터디를 만들었을 때는 "+StudyStatus.DRAFT+" 상태여야 한다."),
                     // 단순히 문자열을 넘기는 방식으로 작성할 경우 해당 코드는 성공 실패 여부와 상관없이 문자열 연산을 하지만
                     // 람다식으로 만들었을 경우에는 해당 함수가 필요할 때만 호출되어 생성됨으로 연산 자원을 아낄 수 있다.
@@ -59,9 +59,12 @@ class StudyTest {
         System.out.println("StudyTest.create_new_study");
     }
 
-    @Test
-    @Tag("fast") // tag 에 따른 테스트 제공
-    @DisplayName("스터디 생성 시 ThrowException ")
+    // Tag Annotation은 profile 을 설정하여 value에 맞는 Grouping 을 하고
+    // mvnw test(tag) -p "profile name" 를 통해 분류에 맞는 테스트만을 실행할 수 있다.
+
+
+    @FastTest // Custom Tag
+    @DisplayName("스터디 생성 시 ThrowException? ")
     void create_new_study_ThrowException() {
         // assertThrows(IllegalArgumentException.class, () -> new Study(-10));
 
@@ -74,8 +77,8 @@ class StudyTest {
     }
 
     @Test
-    @DisplayName("스터디 생성 시 Time Out ")
-    @Tag("slow")
+    @DisplayName("스터디 생성 시 Time Out? ")
+    @Tag("slow") // tag 에 따른 테스트 제공
     void create_new_study_And_Timeout() {
         assertTimeout(Duration.ofSeconds(1), () -> new Study(10));
 
