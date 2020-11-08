@@ -74,6 +74,7 @@ class StudyTest {
 
         // Assert
         assertEquals(message, "Limit 는 0보다 커야한다.");
+
     }
 
     @Test
