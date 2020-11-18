@@ -1,11 +1,13 @@
-package com.example.demo.junit;
+package com.example.demo.junit.simpletest;
 
 import com.example.demo.Study;
 import com.example.demo.StudyStatus;
+import com.example.demo.junit.runwith.FindSlowTestExtension;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.Duration;
 
@@ -13,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
+@ExtendWith(FindSlowTestExtension.class)
 class StudyTest {
 
     @Test
